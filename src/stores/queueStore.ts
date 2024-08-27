@@ -308,7 +308,7 @@ export const useQueueStore = defineStore('queue', {
       )
       const newHistoryItems = toClassAll(
         history.History.filter(
-          (item) => item.prompt[0] > this.lastHistoryQueueIndex
+          (item) => item.workflow[0] > this.lastHistoryQueueIndex
         )
       )
       const existingHistoryItems = this.historyTasks.filter(
