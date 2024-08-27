@@ -262,14 +262,14 @@ class ComfyList {
                   ? item.remove
                   : {
                       name: 'Delete',
-                      cb: () => api.deleteItem(this.#type, item.prompt[1])
+                      cb: () => api.deleteItem(this.#type, item.workflow[1])
                     }
-              return $el('div', { textContent: item.prompt[0] + ': ' }, [
+              return $el('div', { textContent: item.workflow[0] + ': ' }, [
                 $el('button', {
                   textContent: 'Load',
                   onclick: async () => {
                     await app.loadGraphData(
-                      item.prompt[3].extra_pnginfo.workflow,
+                      item.workflow[3].extra_pnginfo.workflow,
                       true,
                       false
                     )

@@ -7,7 +7,7 @@ import {
   validateComfyNodeDef,
   EmbeddingsResponse,
   ExtensionsResponse,
-  PromptResponse,
+  WorkflowResponse,
   SystemStats,
   User,
   Settings
@@ -17,7 +17,7 @@ interface QueuePromptRequestBody {
   client_id: string
   // Mapping from node id to node info + input values
   // TODO: Type this.
-  prompt: Record<number, any>
+  workflow: Record<number, any>
   extra_data: {
     extra_pnginfo: {
       workflow: ComfyWorkflowJSON
@@ -82,7 +82,7 @@ class ComfyApi extends EventTarget {
   #pollQueue() {
     setInterval(async () => {
       try {
-        const resp = await this.fetchApi('/prompt')
+        const resp = await this.fetchApi('/workflow')
         const status = await resp.json()
         this.dispatchEvent(new CustomEvent('status', { detail: status }))
       } catch (error) {
@@ -283,16 +283,16 @@ class ComfyApi extends EventTarget {
 
   /**
    *
-   * @param {number} number The index at which to queue the prompt, passing -1 will insert the prompt at the front of the queue
-   * @param {object} prompt The prompt data to queue
+   * @param {number} number The index at which to queue the workflow, passing -1 will insert the workflow at the front of the queue
+   * @param {object} workflow The workflow data to queue
    */
   async queuePrompt(
     number: number,
     { output, workflow }
-  ): Promise<PromptResponse> {
+  ): Promise<WorkflowResponse> {
     const body: QueuePromptRequestBody = {
       client_id: this.clientId,
-      prompt: output,
+      workflow: output,
       extra_data: { extra_pnginfo: { workflow } }
     }
 
@@ -302,7 +302,7 @@ class ComfyApi extends EventTarget {
       body.number = number
     }
 
-    const res = await this.fetchApi('/prompt', {
+    const res = await this.fetchApi('/workflow', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -344,14 +344,14 @@ class ComfyApi extends EventTarget {
       const data = await res.json()
       return {
         // Running action uses a different endpoint for cancelling
-        Running: data.queue_running.map((prompt) => ({
+        Running: data.queue_running.map((workflow) => ({
           taskType: 'Running',
-          prompt,
+          workflow,
           remove: { name: 'Cancel', cb: () => api.interrupt() }
         })),
-        Pending: data.queue_pending.map((prompt) => ({
+        Pending: data.queue_pending.map((workflow) => ({
           taskType: 'Pending',
-          prompt
+          workflow
         }))
       }
     } catch (error) {
@@ -361,8 +361,8 @@ class ComfyApi extends EventTarget {
   }
 
   /**
-   * Gets the prompt execution history
-   * @returns Prompt history including node outputs
+   * Gets the workflow execution history
+   * @returns Workflow history including node outputs
    */
   async getHistory(
     max_items: number = 200
@@ -428,7 +428,7 @@ class ComfyApi extends EventTarget {
   }
 
   /**
-   * Interrupts the execution of the running prompt
+   * Interrupts the execution of the running workflow
    */
   async interrupt() {
     await this.#postItem('interrupt', null)

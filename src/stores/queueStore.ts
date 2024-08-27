@@ -3,7 +3,7 @@ import { app } from '@/scripts/app'
 import type {
   TaskItem,
   TaskType,
-  TaskPrompt,
+  TaskWorkflow,
   TaskStatus,
   StatusWsMessageStatus,
   TaskOutput,
@@ -51,14 +51,14 @@ export class ResultItemImpl {
 
 export class TaskItemImpl {
   readonly taskType: TaskType
-  readonly prompt: TaskPrompt
+  readonly prompt: TaskWorkflow
   readonly status?: TaskStatus
   readonly outputs: TaskOutput
   readonly flatOutputs: ReadonlyArray<ResultItemImpl>
 
   constructor(
     taskType: TaskType,
-    prompt: TaskPrompt,
+    prompt: TaskWorkflow,
     status: TaskStatus | undefined,
     outputs: TaskOutput,
     flatOutputs?: ReadonlyArray<ResultItemImpl>
@@ -291,7 +291,7 @@ export const useQueueStore = defineStore('queue', {
             (task: TaskItem) =>
               new TaskItemImpl(
                 task.taskType,
-                task.prompt,
+                task.workflow,
                 task['status'],
                 task['outputs'] || {}
               )
@@ -304,7 +304,7 @@ export const useQueueStore = defineStore('queue', {
 
       // Process history items
       const allIndex = new Set(
-        history.History.map((item: TaskItem) => item.prompt[0])
+        history.History.map((item: TaskItem) => item.workflow[0])
       )
       const newHistoryItems = toClassAll(
         history.History.filter(

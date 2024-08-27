@@ -5,7 +5,7 @@ import { colorPalettesSchema } from './colorPalette'
 
 const zNodeType = z.string()
 const zQueueIndex = z.number()
-const zPromptId = z.string()
+const zWorkflowId = z.string()
 const zResultItem = z.object({
   filename: z.string(),
   subfolder: z.string().optional(),
@@ -33,14 +33,14 @@ const zStatusWsMessage = z.object({
 const zProgressWsMessage = z.object({
   value: z.number().int(),
   max: z.number().int(),
-  prompt_id: zPromptId,
+  workflow_id: zWorkflowId,
   node: zNodeId
 })
 
 const zExecutingWsMessage = z.object({
   node: zNodeId,
   display_node: zNodeId,
-  prompt_id: zPromptId
+  workflow_id: zWorkflowId
 })
 
 const zExecutedWsMessage = zExecutingWsMessage.extend({
@@ -48,7 +48,7 @@ const zExecutedWsMessage = zExecutingWsMessage.extend({
 })
 
 const zExecutionWsMessageBase = z.object({
-  prompt_id: zPromptId,
+  workflow_id: zWorkflowId,
   timestamp: z.number().int()
 })
 
@@ -89,12 +89,12 @@ export type ExecutionInterruptedWsMessage = z.infer<
 export type ExecutionErrorWsMessage = z.infer<typeof zExecutionErrorWsMessage>
 // End of ws messages
 
-const zPromptInputItem = z.object({
+const zWorkflowInputItem = z.object({
   inputs: z.record(z.string(), z.any()),
   class_type: zNodeType
 })
 
-const zPromptInputs = z.record(zPromptInputItem)
+const zWorkflowInputs = z.record(zWorkflowInputItem)
 
 const zExtraPngInfo = z
   .object({
@@ -147,17 +147,17 @@ const zStatus = z.object({
   messages: z.array(zStatusMessage)
 })
 
-const zTaskPrompt = z.tuple([
+const zTaskWorkflow = z.tuple([
   zQueueIndex,
-  zPromptId,
-  zPromptInputs,
+  zWorkflowId,
+  zWorkflowInputs,
   zExtraData,
   zOutputsToExecute
 ])
 
 const zRunningTaskItem = z.object({
   taskType: z.literal('Running'),
-  prompt: zTaskPrompt,
+  workflow: zTaskWorkflow,
   // @Deprecated
   remove: z.object({
     name: z.literal('Cancel'),
@@ -167,14 +167,14 @@ const zRunningTaskItem = z.object({
 
 const zPendingTaskItem = z.object({
   taskType: z.literal('Pending'),
-  prompt: zTaskPrompt
+  workflow: zTaskWorkflow
 })
 
 const zTaskOutput = z.record(zNodeId, zOutputs)
 
 const zHistoryTaskItem = z.object({
   taskType: z.literal('History'),
-  prompt: zTaskPrompt,
+  workflow: zTaskWorkflow,
   status: zStatus.optional(),
   outputs: zTaskOutput
 })
@@ -192,7 +192,7 @@ const zTaskType = z.union([
 ])
 
 export type TaskType = z.infer<typeof zTaskType>
-export type TaskPrompt = z.infer<typeof zTaskPrompt>
+export type TaskWorkflow = z.infer<typeof zTaskWorkflow>
 export type TaskStatus = z.infer<typeof zStatus>
 export type TaskOutput = z.infer<typeof zTaskOutput>
 
@@ -278,7 +278,7 @@ const zStringInputSpec = inputSpec([
   zBaseInputSpecValue.extend({
     default: z.string().optional(),
     multiline: z.boolean().optional(),
-    dynamicPrompts: z.boolean().optional()
+    dynamicWorkflows: z.boolean().optional()
   })
 ])
 
@@ -362,9 +362,9 @@ export function validateComfyNodeDef(
 
 const zEmbeddingsResponse = z.array(z.string())
 const zExtensionsResponse = z.array(z.string())
-const zPromptResponse = z.object({
+const zWorkflowResponse = z.object({
   node_errors: z.array(z.string()).optional(),
-  prompt_id: z.string().optional(),
+  workflow_id: z.string().optional(),
   exec_info: z
     .object({
       queue_remaining: z.number().optional()
@@ -426,7 +426,7 @@ const zSettings = z.record(z.any()).and(
       'Comfy.Node.ShowDeprecated': z.boolean(),
       'Comfy.Node.ShowExperimental': z.boolean(),
       'Comfy.PreviewFormat': z.string(),
-      'Comfy.PromptFilename': z.boolean(),
+      'Comfy.WorkflowFilename': z.boolean(),
       'Comfy.Sidebar.Location': z.enum(['left', 'right']),
       'Comfy.Sidebar.Size': z.number(),
       'Comfy.SwitchUser': z.any(),
@@ -441,7 +441,7 @@ const zSettings = z.record(z.any()).and(
 
 export type EmbeddingsResponse = z.infer<typeof zEmbeddingsResponse>
 export type ExtensionsResponse = z.infer<typeof zExtensionsResponse>
-export type PromptResponse = z.infer<typeof zPromptResponse>
+export type WorkflowResponse = z.infer<typeof zWorkflowResponse>
 export type Settings = z.infer<typeof zSettings>
 export type SystemStats = z.infer<typeof zSystemStats>
 export type User = z.infer<typeof zUser>
