@@ -533,35 +533,35 @@ export class ComfyUI {
       ),
       $el('button.comfy-queue-btn', {
         id: 'queue-button',
-        textContent: 'Queue Prompt',
+        textContent: 'Run Workflow',
         onclick: () => app.queuePrompt(0, this.batchCount)
       }),
-      $el('div', {}, [
-        $el('label', { innerHTML: 'Extra options' }, [
-          $el('input', {
-            type: 'checkbox',
-            onchange: (i) => {
-              document.getElementById('extraOptions').style.display = i
-                .srcElement.checked
-                ? 'block'
-                : 'none'
-              this.batchCount = i.srcElement.checked
-                ? Number.parseInt(
-                    (
-                      document.getElementById(
-                        'batchCountInputRange'
-                      ) as HTMLInputElement
-                    ).value
-                  )
-                : 1
-              ;(
-                document.getElementById('autoQueueCheckbox') as HTMLInputElement
-              ).checked = false
-              this.autoQueueEnabled = false
-            }
-          })
-        ])
-      ]),
+      // $el('div', {}, [
+      //   $el('label', { innerHTML: 'Extra options' }, [
+      //     $el('input', {
+      //       type: 'checkbox',
+      //       onchange: (i) => {
+      //         document.getElementById('extraOptions').style.display = i
+      //           .srcElement.checked
+      //           ? 'block'
+      //           : 'none'
+      //         this.batchCount = i.srcElement.checked
+      //           ? Number.parseInt(
+      //               (
+      //                 document.getElementById(
+      //                   'batchCountInputRange'
+      //                 ) as HTMLInputElement
+      //               ).value
+      //             )
+      //           : 1
+      //         ;(
+      //           document.getElementById('autoQueueCheckbox') as HTMLInputElement
+      //         ).checked = false
+      //         this.autoQueueEnabled = false
+      //       }
+      //     })
+      //   ])
+      // ]),
       $el(
         'div',
         { id: 'extraOptions', style: { width: '100%', display: 'none' } },
@@ -625,31 +625,31 @@ export class ComfyUI {
           ])
         ]
       ),
-      $el('div.comfy-menu-btns', [
-        $el('button', {
-          id: 'queue-front-button',
-          textContent: 'Queue Front',
-          onclick: () => app.queuePrompt(-1, this.batchCount)
-        }),
-        $el('button', {
-          $: (b) => (this.queue.button = b as HTMLButtonElement),
-          id: 'comfy-view-queue-button',
-          textContent: 'View Queue',
-          onclick: () => {
-            this.history.hide()
-            this.queue.toggle()
-          }
-        }),
-        $el('button', {
-          $: (b) => (this.history.button = b as HTMLButtonElement),
-          id: 'comfy-view-history-button',
-          textContent: 'View History',
-          onclick: () => {
-            this.queue.hide()
-            this.history.toggle()
-          }
-        })
-      ]),
+      // $el('div.comfy-menu-btns', [
+      //   $el('button', {
+      //     id: 'queue-front-button',
+      //     textContent: 'Queue Front',
+      //     onclick: () => app.queuePrompt(-1, this.batchCount)
+      //   }),
+      //   $el('button', {
+      //     $: (b) => (this.queue.button = b as HTMLButtonElement),
+      //     id: 'comfy-view-queue-button',
+      //     textContent: 'View Queue',
+      //     onclick: () => {
+      //       this.history.hide()
+      //       this.queue.toggle()
+      //     }
+      //   }),
+      //   $el('button', {
+      //     $: (b) => (this.history.button = b as HTMLButtonElement),
+      //     id: 'comfy-view-history-button',
+      //     textContent: 'View History',
+      //     onclick: () => {
+      //       this.queue.hide()
+      //       this.history.toggle()
+      //     }
+      //   })
+      // ]),
       this.queue.element,
       this.history.element,
       $el('button', {
@@ -776,8 +776,8 @@ export class ComfyUI {
   }
 
   setStatus(status) {
-    this.queueSize.textContent =
-      'Queue size: ' + (status ? status.exec_info.queue_remaining : 'ERR')
+    // this.queueSize.textContent = 'Queue size: ' + (status ? status.exec_info.queue_remaining : 'ERR')
+    this.queueSize.textContent = 'Queue size: ' + '0'
     if (status) {
       if (
         this.lastQueueSize != 0 &&
