@@ -26,7 +26,9 @@ const colorPalettes: ColorPalettes = {
         GUIDER: '#66FFFF', // cyan
         SAMPLER: '#ECB4B4', // very soft red
         SIGMAS: '#CDFFCD', // soft lime green
-        TAESD: '#DCC274' // cheesecake
+        TAESD: '#DCC274', // cheesecake
+        FLOAT: '#E0E5EC',
+        STRING: '#FFF000'
       },
       litegraph_base: {
         BACKGROUND_IMAGE:
@@ -88,7 +90,9 @@ const colorPalettes: ColorPalettes = {
         MASK: '#9CCC65', // light green
         MODEL: '#7E57C2', // deep purple
         STYLE_MODEL: '#D4E157', // lime
-        VAE: '#FF7043' // deep orange
+        VAE: '#FF7043', // deep orange
+        FLOAT: '#2A313A',
+        STRING: '#FFF000'
       },
       litegraph_base: {
         BACKGROUND_IMAGE:
